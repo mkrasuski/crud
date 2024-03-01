@@ -2,7 +2,7 @@
 type Value = string | number
 type Row = Record<string,Value>
 
-type FieldDef = {
+export type FieldDef = {
     name: string
     heading?: string
     desc?: string
@@ -14,7 +14,7 @@ type FieldDef = {
     convOut?: (r:Row) => Value 
 }
 
-class Meta {
+export class DataSourceAdapter {
     _fields:FieldDef[] = []
     _byName:Record<string,FieldDef> = {}
     _byHeading:Record<string,FieldDef> = {}
@@ -45,12 +45,15 @@ class Meta {
     fieldByHeading(name:string) { return this._byHeading[name] }
 
     convertOut(r:Row) {
-        const out = {}
+        const out: Row = {}
         this._fields.forEach( ({ name, value, convOut }) => {
 
             if (typeof value === 'function') return // skip computed field
             
-            let value = this.getValue(r, name)
+            let v = this.getValue(r, name)
+            out[name] = typeof convOut === 'function' ? 
+                convOut(r) : 
+                v
         })
         return out as Row
     }

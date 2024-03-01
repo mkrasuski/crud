@@ -1,3 +1,4 @@
+import { DataSourceAdapter, FieldDef } from "./adapter"
 
 const DFTAFields:FieldDef[] = [
     { name: 'DIST_FILE_TYPE_ADDR_ID', heading:'id', pk:true },
@@ -20,11 +21,11 @@ const DFTAFields:FieldDef[] = [
     { name: 'LAST_USER_ID', heading:'lu user' },
 // table view fields
     { name: 'id',       value: (r) => r.DIST_FILE_TYPE_ADDR_ID },
-    { name: 'creds',    value: (r) => `${r.USER_ID}@${r.NETWORK_ADDRESS}` },
+    { name: 'ext',      value: (r) => r.FILE_EXTENSION },
+    { name: 'creds',    value: (r) => (r.TRANSFER_METHOD === 'NFS' ) ? '' : `${r.USER_ID}@${r.NETWORK_ADDRESS}` },
     { name: 'method',   value: (r) =>`${r.TRANSFER_METHOD}(${r.TRANSFER_MODE})` },
     { name: 'mode',     value: (r) => r.RUN_MODE === 'C' ? 'c' : `s(${r.RUN_PERIOD})` },
     { name: 'path',     value: (r) => r.TARGET_PATH },
-    { name: 'ext',      value: (r) => r.FILE_EXTENSION },
 ]
 
-export const DFTAMeta = new Meta(DFTAFields)
+export const DFTADataSourceAdapter = new DataSourceAdapter(DFTAFields)
